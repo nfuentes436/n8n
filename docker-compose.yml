@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_ENCRYPTION_KEY=change_this_key_to_a_secure_one
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_HOST=n8n
+      - N8N_PROTOCOL=http
+      - N8N_PORT=5678
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_RUNNERS_MODE=external
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+      - N8N_RUNNERS_BROKER_PORT=5679
+      - N8N_RUNNERS_AUTH_TOKEN=67fb7d4afe19957cde6664ec994f4a5b599df9d8c4d7dbfb008df18cc9a3cc0d
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+    networks:
+      - n8n_net
+
+  runners:
+    build:
+      context: .
+      dockerfile: Dockerfile.runners
+    restart: always
+    environment:
+      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
+      - N8N_RUNNERS_TYPE=python
+      - N8N_RUNNERS_AUTH_TOKEN=67fb7d4afe19957cde6664ec994f4a5b599df9d8c4d7dbfb008df18cc9a3cc0d
+    depends_on:
+      - n8n
+    networks:
+      - n8n_net
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n
+      - POSTGRES_DB=n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n_net
+
+volumes:
+  n8n_data:
+  postgres_data:
+
+networks:
+  n8n_net:
