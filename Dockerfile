@@ -1,10 +1,11 @@
-# Dockerfile pour n8n
-FROM n8nio/n8n:2.2.5
+FROM n8nio/n8n
+USER root
 
-# Variables d'environnement générales
-ENV N8N_BASIC_AUTH_ACTIVE=true
-ENV N8N_HOST=0.0.0.0
-ENV N8N_PORT=5678
-ENV N8N_PROTOCOL=http
+RUN apk add --update gcc python3 py3-pip build-base python3-dev curl jq
+RUN python3 -m pip install --upgrade pip
+# installs requests library
+RUN python3 -m pip install requests pandas sqlalchemy psycopg2-binary
 
-EXPOSE 5678
+# upgrades pip (not necessary)#
+#RUN python3 -m pip install --upgrade pip
+USER node
