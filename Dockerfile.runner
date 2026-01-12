@@ -1,0 +1,21 @@
+# Dockerfile pour n8n Task Runner
+FROM node:20-bullseye
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm run build:n8n
+
+# Variables d'environnement
+ENV N8N_RUNNERS_AUTH_TOKEN=test
+ENV N8N_RUNNERS_LAUNCHER_LOG_LEVEL=debug
+ENV N8N_RUNNERS_TASK_BROKER_URI=redis://red-d5iesr6mcj7s73bj3p10:6379
+
+EXPOSE 5680
+
+CMD ["node", "packages/cli/bin/n8n", "run"]
