@@ -1,7 +1,21 @@
-FROM n8nio/n8n
+# On utilise l'image officielle des Task Runners qui inclut Python
+FROM n8nio/runners:latest
+
+# Travail en root pour installer des modules Python
 USER root
 
-RUN apk add --update python3 py3-pip
-RUN python3 -m pip install --upgrade pip
+# Copier un fichier requirements (optionnel) pour installer des libs supplémentaires
+COPY requirements.txt /tmp/requirements.txt
 
-USER node
+# Installer les dépendances Python listées dans requirements.txt
+# (l’image runners contient déjà Python et pip)
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# (Optionnel) nettoyer le fichier
+RUN rm /tmp/requirements.txt
+
+# Remettre l’utilisateur non-root (sécurité)
+#USER node
+
+# Par défaut, cette image lance le launcher de runners
+CMD ["launcher"]
