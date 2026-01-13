@@ -7,8 +7,10 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-RUN pwd
-RUN ls -al
+# Debug : voir le répertoire courant et le contenu
+RUN echo "Current dir:" && pwd
+RUN echo "Files in current dir:" && ls -al
+RUN echo "Files in parent dir:" && ls -al ..
 
 COPY ./package.json ./
 RUN pnpm install --frozen-lockfile
