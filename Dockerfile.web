@@ -10,7 +10,7 @@ RUN npm install -g pnpm
 RUN pwd
 RUN ls -al
 
-COPY package.json ./
+COPY ./package.json ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build:n8n
