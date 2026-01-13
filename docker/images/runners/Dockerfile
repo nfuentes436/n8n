@@ -141,6 +141,10 @@ COPY --chown=root:root docker/images/runners/n8n-task-runners.json /etc/n8n-task
 USER runner
 
 EXPOSE 5680/tcp
+
+ENV N8N_RUNNERS_TASK_BROKER_URI=redis://red-d5iesr6mcj7s73bj3p10:6379
+ENV N8N_RUNNERS_AUTH_TOKEN=test
+
 ENTRYPOINT ["tini", "--", "/usr/local/bin/task-runner-launcher"]
 CMD ["javascript", "python"]
 
