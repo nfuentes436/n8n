@@ -3,13 +3,8 @@
 # ==========================================================
 FROM node:20-bullseye
 
-WORKDIR /app
-
 RUN npm install -g pnpm
-
-COPY ../package.json ./
 RUN pnpm install --frozen-lockfile
-COPY . .
 RUN pnpm run build:n8n
 
 # Config n8n
